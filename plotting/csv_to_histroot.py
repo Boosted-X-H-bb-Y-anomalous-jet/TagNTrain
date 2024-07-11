@@ -65,10 +65,13 @@ def vae_hist(csvreader,process,year,region):
     return h
 
 def convert_region_nom(process,year,region):
-    data_flag       = False
+    data_flag = False
+    mc_no_sys = False
     if process=="data_obs" or "JetHT" in process:
         data_flag   = True
-    
+    if "qcd" in process.lower() or "semileptonic" in process.lower():
+        mc_no_sys = True
+
     if data_flag:
         csvfile    = open(f"merged_output/{process}_{year}_{region}.csv")
     else:
@@ -77,6 +80,8 @@ def convert_region_nom(process,year,region):
     variations = ["nom"]
     for variation in ["pdf","prefire","pileup","PS_ISR","PS_FSR","F","R","RF","top_ptrw","pnet"]:
         if data_flag:
+            break
+        if mc_no_sys:
             break
         variations.append(f"{variation}_up")
         variations.append(f"{variation}_down")
@@ -140,7 +145,7 @@ for year,_ in datasets.items():
         print(process)
         for region in ["SR_Pass","SR_Fail","CR_Pass","CR_Fail"]:
             histos.extend(convert_region_nom(process,year,region).values())
-            if not ("TTToHadronic" in process or "MX" in process):
+            if not ("TTToHadronic" in process or "MX" in process):#Only run systematics on these two
                 continue
             for jec in jecs:
                 histos.extend(convert_region_jecs(process,year,region,jec).values())

@@ -114,6 +114,8 @@ def run_single_process(process,year,job_id,n_jobs,jec_code):
 
     if "JetHT" in process and (year=="2017" or year=="2016"):
         h5_dir  = f"/store/user/shanning/H5_output/{year}/{process}/"
+    #elif ("QCD" in process) or ("SemiLeptonic" in process):
+    #    h5_dir  = f"/store/user/shanning/H5_output/{year}/{process}/"
     else:
         h5_dir  = f"/store/user/roguljic/H5_output/{year}/{process}/"
     if not "jetht" in process.lower():
@@ -146,13 +148,13 @@ def run_single_process(process,year,job_id,n_jobs,jec_code):
 
 def process_file(fin,process,year,region,job_id=0,n_jobs=1,jec_code=0):
     f = h5py.File(fin, "r")
-
+    
     if "jetht" in process.lower():
         weights = []
         data_flag = True
         mc_no_sys = False
     elif "semileptonic" in process.lower() or "qcd" in process.lower():
-        weights = []
+        data_flag = False
         mc_no_sys = True
     else:
         data_flag = False
@@ -247,10 +249,22 @@ def process_file(fin,process,year,region,job_id=0,n_jobs=1,jec_code=0):
         if not data_flag:
             if("MX" in process):
                 lumi_scaling = xsecs["signal"]*int_lumi[year]/n_gen
+                print(f"Lumi scale for {process} {year}: {lumi_scaling:.4f}")
+                weights = f['sys_weights'][start_evt:stop_evt]*lumi_scaling
             else:
                 lumi_scaling = xsecs[process]*int_lumi[year]/n_gen
-            print(f"Lumi scale for {process} {year}: {lumi_scaling:.4f}")
-            weights = f['sys_weights'][start_evt:stop_evt]*lumi_scaling
+                if mc_no_sys:
+                    print(f"Lumi scale for {process} {year}: {lumi_scaling:.4f}")
+                    weights=[]
+                    for i in range(len(tot_mjj)):
+                        weights.append(np.ones(1)*lumi_scaling)
+                    weights=np.array(weights)
+                else:
+                    print(f"Lumi scale for {process} {year}: {lumi_scaling:.4f}")
+                    weights = f['sys_weights'][start_evt:stop_evt]*lumi_scaling
+
+            
+
 
         tot_mh = (np.where(is_j2_moreHiggs == True, tot_mj2, tot_mj1))
         tot_my = (np.where(is_j2_moreHiggs == True, tot_mj1, tot_mj2)) 

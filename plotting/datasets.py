@@ -5,14 +5,24 @@ datasets_n_jobs = {
         "JetHT_Run2016D_HIPM":60,
         "JetHT_Run2016E_HIPM":60,
         "JetHT_Run2016F":60,
-        "TTToHadronic":1
+        "TTToHadronic":1,
+        "TTToSemiLeptonic":1,
+        "QCD_HT700to1000":1,
+        "QCD_HT1000to1500":1,
+        "QCD_HT1500to2000":1,
+        "QCD_HT2000toInf":1
     },
     "2016":{
         "JetHT_Run2016F_HIPM":60,
         "JetHT_Run2016G":60,
         "JetHT_Run2016G1":60,
         "JetHT_Run2016H":7,#Only has a few files
-        "TTToHadronic":1
+        "TTToHadronic":1,
+        "TTToSemiLeptonic":1,
+        "QCD_HT700to1000":1,
+        "QCD_HT1000to1500":1,
+        "QCD_HT1500to2000":1,
+        "QCD_HT2000toInf":1
     },
     "2017":{
         "JetHT_Run2017B":60,
@@ -22,13 +32,23 @@ datasets_n_jobs = {
         "JetHT_Run2017F":60,
         "JetHT_Run2017F1":10,
         "TTToHadronic":1,
+        "TTToSemiLeptonic":1,
+        "QCD_HT700to1000":1,
+        "QCD_HT1000to1500":1,
+        "QCD_HT1500to2000":1,
+        "QCD_HT2000toInf":1
         },
     "2018":{
         "JetHT_Run2018A":60,
         "JetHT_Run2018B":60,
         "JetHT_Run2018C":60,
         "JetHT_Run2018D":60,
-        "TTToHadronic":1
+        "TTToHadronic":1,
+        "TTToSemiLeptonic":1,
+        "QCD_HT700to1000":1,
+        "QCD_HT1000to1500":1,
+        "QCD_HT1500to2000":1,
+        "QCD_HT2000toInf":1
         }
     }
 
