@@ -252,20 +252,19 @@ def process_file(fin,process,year,region,job_id=0,n_jobs=1,jec_code=0):
         if not data_flag:
             if("MX" in process):
                 lumi_scaling = xsecs["signal"]*int_lumi[year]/n_gen
-                print(f"Lumi scale for {process} {year}: {lumi_scaling:.4f}")
-                weights = f['sys_weights'][start_evt:stop_evt]*lumi_scaling
+                weights = f['sys_weights'][start_evt:stop_evt]
             else:
                 lumi_scaling = xsecs[process]*int_lumi[year]/n_gen
                 if mc_no_sys:
-                    print(f"Lumi scale for {process} {year}: {lumi_scaling:.4f}")
                     weights=[]
                     for i in range(len(tot_mjj)):
-                        weights.append(np.ones(1)*lumi_scaling)
+                        weights.append(np.ones(1))
                     weights=np.array(weights)
                 else:
-                    print(f"Lumi scale for {process} {year}: {lumi_scaling:.4f}")
-                    weights = f['sys_weights'][start_evt:stop_evt]*lumi_scaling
-
+                    weights = f['sys_weights'][start_evt:stop_evt]
+            print(f"Lumi scale for {process} {year}: {lumi_scaling:.4f}")
+            for i in range(len(weights)):
+                weights[i][0] *= lumi_scaling
             
 
 

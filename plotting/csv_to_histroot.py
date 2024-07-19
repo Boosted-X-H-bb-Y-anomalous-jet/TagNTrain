@@ -38,6 +38,9 @@ def make_templates(csvreader, process, year, region, weights):
                 w = 1.
             else:
                 w = float(row[column_names[weight]])
+
+            if(weight!="nom"):
+                w *= float(row[column_names["nom"]])
             histos[weight].Fill(mjj, my, w)
     
     if total_rows > 0:
@@ -60,7 +63,7 @@ def vae_hist(csvreader,process,year,region):
         if process=="data_obs":
             w = 1.
         else:
-            w = float(row[5])#nominal weight
+            w = float(row[6])#nominal weight
             h.Fill(vae_loss,w)
     return h
 
@@ -96,49 +99,51 @@ def convert_region_jecs(process,year,region,jec):
     return histos
 
 column_names = {
-    'mjj': 1,
-    'mh': 2,
-    'my': 3,
-    'vae_loss': 4,
-    'nom': 5,
-    'pdf_up': 6,
-    'pdf_down': 7,
-    'prefire_up': 8,
-    'prefire_down': 9,
-    'pileup_up': 10,
-    'pileup_down': 11,
-    'btag_up': 12,
-    'btag_down': 13,
-    'PS_ISR_up': 14,
-    'PS_ISR_down': 15,
-    'PS_FSR_up': 16,
-    'PS_FSR_down': 17,
-    'F_up': 18,
-    'F_down': 19,
-    'R_up': 20,
-    'R_down': 21,
-    'RF_up': 22,
-    'RF_down': 23,
-    'top_ptrw_up': 24,
-    'top_ptrw_down': 25,
-    'pnet_up': 26,
-    'pnet_down': 27,
-    'jes_up': 5,
-    'jes_down': 5,
-    'jer_up': 5,
-    'jer_down': 5,
-    'jms_up': 5,
-    'jms_down': 5,
-    'jmr_up': 5,
-    'jmr_down': 5
+    'evt_no': 1,
+    'mjj': 2,
+    'mh': 3,
+    'my': 4,
+    'vae_loss': 5,
+    'nom': 6,
+    'pdf_up': 7,
+    'pdf_down': 8,
+    'prefire_up': 9,
+    'prefire_down': 10,
+    'pileup_up': 11,
+    'pileup_down': 12,
+    'btag_up': 13,
+    'btag_down': 14,
+    'PS_ISR_up': 15,
+    'PS_ISR_down': 16,
+    'PS_FSR_up': 17,
+    'PS_FSR_down': 18,
+    'F_up': 19,
+    'F_down': 20,
+    'R_up': 21,
+    'R_down': 22,
+    'RF_up': 23,
+    'RF_down': 24,
+    'top_ptrw_up': 25,
+    'top_ptrw_down': 26,
+    'pnet_up': 27,
+    'pnet_down': 28,
+    'jes_up': 6,
+    'jes_down': 6,
+    'jer_up': 6,
+    'jer_down': 6,
+    'jms_up': 6,
+    'jms_down': 6,
+    'jmr_up': 6,
+    'jmr_down': 6
 }
+
 
 jecs = ["jes_up","jes_down","jer_up","jer_down","jms_up","jms_down","jmr_up","jmr_down"]
 
 for year,_ in datasets.items():
-#for year in ["2017"]:
-    print(year)
     for process,_ in datasets[year].items():
+        if year!="2016" or process!="QCD_HT1000to1500":
+            continue
         histos = []
         if "JetHT" in process:#We will jointly process data under "data_obs" name
             continue
