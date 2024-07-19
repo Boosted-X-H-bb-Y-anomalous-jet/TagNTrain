@@ -182,6 +182,7 @@ def process_file(fin,process,year,region,job_id=0,n_jobs=1,jec_code=0):
         hbb_signal_1 = f['jet1_extraInfo'][start_evt:stop_evt,-2]
         hbb_signal_2 = f['jet2_extraInfo'][start_evt:stop_evt,-2]
         evt_num = f['event_info'][start_evt:stop_evt,0]
+        delta_eta = f['jet_kinematics'][start_evt:stop_evt,1]#Saved as |eta1-eta2|
 
         if data_flag or mc_no_sys:
             j1,j2,mjj  = get_jet_4_vecs(f['jet_kinematics'][start_evt:stop_evt],False,False,jec_code)#Data has no jet1/2_JME_vars
@@ -225,7 +226,9 @@ def process_file(fin,process,year,region,job_id=0,n_jobs=1,jec_code=0):
 
         ###pt cut (only really needed in case of jec changing pt)
         ptcut   = np.logical_and(ptj1_cut>300, ptj2_cut>300)
+        delta_eta_cut = delta_eta<1.3
         keepevent = np.logical_and(keepevent,ptcut)
+        keepevent = np.logical_and(keepevent,delta_eta_cut)
 
         ###
         is_j1_higgs = np.logical_and(is_j1_moreHiggs, does_j1_pass_hbb)
