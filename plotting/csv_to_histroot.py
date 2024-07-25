@@ -16,10 +16,19 @@ def make_templates(csvreader, process, year, region, weights):
     total_rows = 0
     skipped_rows = 0
 
+    if "IR" in region:
+        flag3d = True
+    else:
+        flag3d = false
+
     for weight in weights:
         name = f"{process}_{year}_{region}_{weight}"
-        h2 = r.TH2F(f"mjj_my_{name}", "", 40, 1000, 3000, 100, 0, 1000)
-        histos[weight] = h2
+        if flag3d:
+            #Used to optimize anomalous cut
+            histo = r.TH3F(f"mjj_my_vaeloss_{name}", "", 40, 1000, 3000, 100, 0, 1000,100,0,0.0005)
+        else:
+            histo = r.TH2F(f"mjj_my_{name}", "", 40, 1000, 3000, 100, 0, 1000)
+        histos[weight] = histo
 
     for i, row in enumerate(csvreader):
         total_rows += 1
@@ -41,7 +50,12 @@ def make_templates(csvreader, process, year, region, weights):
 
             if(weight!="nom"):
                 w *= float(row[column_names["nom"]])
-            histos[weight].Fill(mjj, my, w)
+            
+            if flag3d:
+                vaeloss = float(row[4])
+                histos[weight].Fill(mjj, my, vaeloss, w)
+            else:
+                histos[weight].Fill(mjj, my, w)
     
     if total_rows > 0:
         fraction_skipped = skipped_rows / total_rows
@@ -150,7 +164,7 @@ for year,_ in datasets.items():
         print(process)
         for region in ["SR_Pass","SR_Fail","CR_Pass","CR_Fail"]:
             histos.extend(convert_region_nom(process,year,region).values())
-            if not ("TTToHadronic" in process or "MX" in process):#Only run systematics on these two
+            if not ("TTToHadronic" in process or "MX" in process or "TTToSemiLeptonic"):#Only run systematics on these
                 continue
             for jec in jecs:
                 histos.extend(convert_region_jecs(process,year,region,jec).values())
