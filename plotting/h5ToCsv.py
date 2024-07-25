@@ -153,13 +153,12 @@ def process_file(fin,process,year,region,job_id=0,n_jobs=1,jec_code=0):
         weights = []
         data_flag = True
         mc_no_sys = False
-    elif "semileptonic" in process.lower() or "qcd" in process.lower():
+    elif "qcd" in process.lower():
         data_flag = False
         mc_no_sys = True
     else:
         data_flag = False
         mc_no_sys = False
-
 
     n_presel     = len(f['event_info']) #event_info[i]: [eventNum, MET, MET_phi, genWeight, leptonic_decay, run, self.year, num_jets]
     presel_eff   = f['preselection_eff'][0]
