@@ -19,7 +19,7 @@ def make_templates(csvreader, process, year, region, weights):
     if "IR" in region:
         flag3d = True
     else:
-        flag3d = false
+        flag3d = False
 
     for weight in weights:
         name = f"{process}_{year}_{region}_{weight}"
@@ -43,12 +43,16 @@ def make_templates(csvreader, process, year, region, weights):
         my = float(row[3])
         
         for weight in weights:
+            jec_flag = False
+            if "jes" in weight or "jms" in weight or "jer" in weight or "jmr" in weight:
+                jec_flag = True
+
             if process == "data_obs":
                 w = 1.
             else:
                 w = float(row[column_names[weight]])
 
-            if(weight!="nom"):
+            if(weight!="nom" and jec_flag==False):
                 w *= float(row[column_names["nom"]])
             
             if flag3d:
@@ -86,7 +90,7 @@ def convert_region_nom(process,year,region):
     mc_no_sys = False
     if process=="data_obs" or "JetHT" in process:
         data_flag   = True
-    if "qcd" in process.lower() or "semileptonic" in process.lower():
+    if "qcd" in process.lower():
         mc_no_sys = True
 
     if data_flag:
@@ -113,58 +117,57 @@ def convert_region_jecs(process,year,region,jec):
     return histos
 
 column_names = {
-    'evt_no': 1,
-    'mjj': 2,
-    'mh': 3,
-    'my': 4,
-    'vae_loss': 5,
-    'nom': 6,
-    'pdf_up': 7,
-    'pdf_down': 8,
-    'prefire_up': 9,
-    'prefire_down': 10,
-    'pileup_up': 11,
-    'pileup_down': 12,
-    'btag_up': 13,
-    'btag_down': 14,
-    'PS_ISR_up': 15,
-    'PS_ISR_down': 16,
-    'PS_FSR_up': 17,
-    'PS_FSR_down': 18,
-    'F_up': 19,
-    'F_down': 20,
-    'R_up': 21,
-    'R_down': 22,
-    'RF_up': 23,
-    'RF_down': 24,
-    'top_ptrw_up': 25,
-    'top_ptrw_down': 26,
-    'pnet_up': 27,
-    'pnet_down': 28,
-    'jes_up': 6,
-    'jes_down': 6,
-    'jer_up': 6,
-    'jer_down': 6,
-    'jms_up': 6,
-    'jms_down': 6,
-    'jmr_up': 6,
-    'jmr_down': 6
+    'evt_no': 0,
+    'mjj': 1,
+    'mh': 2,
+    'my': 3,
+    'vae_loss': 4,
+    'nom': 5,
+    'pdf_up': 6,
+    'pdf_down': 7,
+    'prefire_up': 8,
+    'prefire_down': 9,
+    'pileup_up': 10,
+    'pileup_down': 11,
+    'btag_up': 12,
+    'btag_down': 13,
+    'PS_ISR_up': 14,
+    'PS_ISR_down': 15,
+    'PS_FSR_up': 16,
+    'PS_FSR_down': 17,
+    'F_up': 18,
+    'F_down': 19,
+    'R_up': 20,
+    'R_down': 21,
+    'RF_up': 22,
+    'RF_down': 23,
+    'top_ptrw_up': 24,
+    'top_ptrw_down': 25,
+    'pnet_up': 26,
+    'pnet_down': 27,
+    'jes_up': 5,
+    'jes_down': 5,
+    'jer_up': 5,
+    'jer_down': 5,
+    'jms_up': 5,
+    'jms_down': 5,
+    'jmr_up': 5,
+    'jmr_down': 5
 }
+
 
 
 jecs = ["jes_up","jes_down","jer_up","jer_down","jms_up","jms_down","jmr_up","jmr_down"]
 
 for year,_ in datasets.items():
     for process,_ in datasets[year].items():
-        if year!="2016" or process!="QCD_HT1000to1500":
-            continue
+        print(year, process)
         histos = []
         if "JetHT" in process:#We will jointly process data under "data_obs" name
             continue
-        print(process)
-        for region in ["SR_Pass","SR_Fail","CR_Pass","CR_Fail"]:
+        for region in ["SR_Pass","SR_Fail","CR_Pass","CR_Fail","IR_Pass","IR_Fail"]:
             histos.extend(convert_region_nom(process,year,region).values())
-            if not ("TTToHadronic" in process or "MX" in process or "TTToSemiLeptonic"):#Only run systematics on these
+            if not ("TTToHadronic" in process or "MX" in process or "TTToSemiLeptonic" in process):#Only run systematics on these
                 continue
             for jec in jecs:
                 histos.extend(convert_region_jecs(process,year,region,jec).values())

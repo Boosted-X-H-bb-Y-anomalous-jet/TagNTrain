@@ -1,1 +1,3 @@
 templates*root
+output/*
+merged_output/*

@@ -53,7 +53,31 @@ datasets_n_jobs = {
     }
 
 
-signals = ["MX1200_MY90","MX1400_MY90","MX1600_MY90","MX1800_MY90","MX2000_MY90","MX2200_MY90","MX2400_MY90","MX2500_MY90","MX2600_MY90","MX2800_MY90","MX3000_MY90","MX3500_MY90","MX4000_MY90"]
-for year,datasets_year in datasets_n_jobs.items():
-    for signal in signals:
-        datasets_year[signal] = 1
+# signals = ["MX1200_MY90","MX1400_MY90","MX1600_MY90","MX1800_MY90","MX2000_MY90","MX2200_MY90","MX2400_MY90","MX2500_MY90","MX2600_MY90","MX2800_MY90","MX3000_MY90","MX3500_MY90","MX4000_MY90"]
+# for year,datasets_year in datasets_n_jobs.items():
+#     for signal in signals:
+#         datasets_year[signal] = 1
+
+def fill_signal_datasets(datasets,MX, MY):
+    import subprocess
+    eosls       = 'eos root://cmseos.fnal.gov ls'
+    base_path = "/store/user/roguljic/H5_output"
+    for mx in MX:
+        for my in MY:
+            dataset = f"MX{mx}_MY{my}"
+            missing_flag = False
+            for year in ["2016APV","2016","2017","2018"]:
+                merged_path = f"{base_path}/{year}/{dataset}/merged.h5"
+                try:
+                    subprocess.check_output(['{} {}'.format(eosls,merged_path)],shell=True,text=True,stderr=subprocess.DEVNULL).split('\n')
+                except:
+                    missing_flag = True
+            if missing_flag:
+                continue
+            
+            for year in ["2016APV","2016","2017","2018"]:
+                datasets[year][dataset]=1
+
+MX = ["1400","1600","1800","2200","2600","3000"]
+MY = ["90","125","190","250","300","400"]
+fill_signal_datasets(datasets_n_jobs,MX, MY)

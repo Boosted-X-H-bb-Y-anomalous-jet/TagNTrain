@@ -80,7 +80,7 @@ def check_mc(dataset,year):
     args_to_write   = []
     jec_map         = {0:"nom",1:"jes_up",2:"jes_down",3:"jer_up",4:"jer_down",5:"jms_up",6:"jms_down",7:"jmr_up",8:"jmr_down"}
     mc_no_sys = False
-    if "qcd" in dataset.lower() or "semileptonic" in dataset.lower():
+    if "qcd" in dataset.lower():
         mc_no_sys = True
 
     for jec_code in range(9):

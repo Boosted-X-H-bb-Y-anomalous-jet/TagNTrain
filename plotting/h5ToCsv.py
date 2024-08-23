@@ -208,9 +208,9 @@ def process_file(fin,process,year,region,job_id=0,n_jobs=1,jec_code=0):
         does_j2_fail_hbb = hbb_signal_2 < pnet_tight[year]
 
         if region=="SR":
-            vaecuts = (vae_loss>0.00005)
+            vaecuts = (vae_loss>0.00002)
         elif region=="CR":
-            vaecuts = np.logical_and((vae_loss>0.000025),(vae_loss<0.00004))
+            vaecuts = np.logical_and((vae_loss>0.000005),(vae_loss<0.00002))
         else:
             vaecuts = np.ones(np.shape(vae_loss))
         ####
